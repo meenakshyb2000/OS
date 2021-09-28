@@ -1,0 +1,107 @@
+#include<stdio.h>
+struct process{
+int at,bt,tat,wt,tbt,flag;
+};
+float tat=0;
+float wt=0;
+int time=0;
+void sort(struct process P[],int n1)
+{
+
+struct process tmp;
+int f=0;
+for(int i=0;i<n1;i++)
+{
+for(int j=0;j<n1-i-1;j++)
+{
+if(P[j].at>P[j+1].at)
+{
+tmp=P[j];
+P[j]=P[j+1];
+P[j+1]=tmp;
+f=1;
+}
+}
+if(f==0)
+break;
+}
+
+}
+
+void execute(struct process P[],int n1)
+{
+int i=0,min,tmp=999;
+int count=n1,idle=0;
+while(1)
+{
+min=999;
+for(int i=0;i<n1;i++)
+{
+if(P[i].at<=time && P[i].flag==-1)
+{
+if(min==999 || P[i].tbt<P[min].tbt)
+min=i;
+}
+}
+if(min==999 && count==0)
+{
+printf("%d ",time);
+idle=0;
+return;
+}
+else if(min==999 && count!=0)
+{
+idle++;
+
+if(idle==1)
+printf("%d ",time);
+time++;
+}
+else
+{
+
+if(min!=tmp)
+{
+printf("%d P%d ",time, min+1);
+tmp=min;
+idle=0;
+}
+
+P[min].tbt--;
+time++;
+if(P[min].tbt==0)
+{
+P[min].flag=1;
+P[min].tat=time-P[min].at;
+P[min].wt=P[min].tat-P[min].bt;
+//printf("%d\n",P[min].wt);
+tat+=P[min].tat;
+wt+=P[min].wt;
+count--;
+
+}	
+}
+}
+}
+void main()
+{
+int n;
+//struct process[10];
+printf("Enter number of processes");
+scanf("%d",&n);
+struct process P[n];
+for(int i=0;i<n;i++)
+{
+printf("Enter at,bt for process %d ",i+1);
+scanf("%d%d",&P[i].at,&P[i].bt);
+P[i].flag=-1;
+P[i].tbt=P[i].bt;
+}
+
+sort(P,n);
+execute(P,n);
+printf("The turn around time is %f\n",tat);
+printf("The waiting time is %f\n",wt);
+printf("the averae turn around time is %.2f\n",(float)(tat/n));
+printf("The average waiting time is %.2f\n",(float)(wt/n));
+}
