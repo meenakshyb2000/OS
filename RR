@@ -1,0 +1,165 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct process{
+int id,at,bt,tat,wt,flag,tbt;
+};
+float tat=0;
+float wt=0;
+int ct=0;
+struct queue{
+int rear,front,size;
+int *q;
+};
+void sort(struct process p[],int n)
+{
+struct process tmp;
+int flag=0;
+for(int i=0;i<n;i++)
+{
+flag=0;
+for(int j=0;j<n-i-1;j++)
+{
+if(p[j].at>p[j+1].at)
+{
+flag=1;
+tmp=p[j];
+p[j]=p[j+1];
+p[j+1]=tmp;
+}
+}
+if(flag==0)
+break;
+}
+}
+void enqueue( struct queue* qu, int val)
+{
+if((qu->rear+1)%10==qu->front)
+printf("Queue full");
+else if(qu->rear==-1 && qu->front==-1)
+{
+qu->front=0;
+qu->rear=0;
+qu->q[qu->rear]=val;
+}
+else
+{
+qu->rear=(qu->rear+1)%10;
+qu->q[qu->rear]=val;
+}
+}
+int dequeue(struct process P[], struct queue* qu, int* jval1 ,int* comp1, int time)
+{
+int index;
+if(qu->front==-1 && qu->rear==-1)
+{
+printf("Queue is empty");
+return 2;
+}
+else if(qu->front==qu->rear)
+{
+index=qu->q[qu->front];
+qu->front=-1;
+qu->rear=-1;
+}
+else
+{
+index=qu->q[qu->front];
+qu->front=(qu->front+1)%10;
+}
+if((P[index].tbt<time)||(*comp1==1))
+
+{
+ct+=P[index].tbt;
+P[index].tbt=0;
+
+}
+else if (P[index].tbt>=time)
+{
+ct+=time;
+P[index].tbt-=time;
+}
+printf("P%d %d ",P[index].id,ct);
+   if(P[index].tbt==0)
+   {
+    *comp1=*comp1-1;
+    P[index].tat=ct-P[index].at;
+    P[index].wt=P[index].tat-P[index].bt;
+    tat+=P[index].tat;
+    wt+=P[index].wt;
+    P[index].flag=0;
+   }
+   else
+   {
+    *jval1=index;
+   }
+    return P[index].flag;
+}
+
+
+
+void main()
+{
+int n,time;
+int done=0;
+struct process P[10];
+struct queue Q;
+Q.size=10;
+Q.front=-1;
+Q.rear=-1;
+Q.q=(int*)malloc(10*sizeof(int));
+printf("Enter the number of processes ");
+scanf("%d",&n);
+for(int i=0;i<n;i++)
+{
+printf("Enter the at and bt of process %d ",i+1);
+scanf("%d%d",&P[i].at,&P[i].bt);
+P[i].flag=-1;
+P[i].tbt=P[i].bt;
+P[i].id=i+1;
+}
+printf("Enter the time quantam ");
+scanf("%d",&time);
+int i=0;
+int j;
+int comp=n;
+//printf("Hai");
+sort(P,n);
+//printf("Hai");
+printf("%d ",ct);
+while(1)
+{
+while(i<n)
+{
+if(P[i].at<=ct)
+{
+enqueue(&Q,i);
+i++;
+continue;
+}
+else
+{
+break;
+}
+}
+
+if(done==-1)
+{
+enqueue(&Q,j);
+}
+if(Q.front==-1 && Q.rear==-1)
+break;
+else
+done=dequeue(P,&Q,&j,&comp,time);
+
+
+}
+printf("\nThe tat and wt of the processes are\n");
+for(int i=0;i<n;i++)
+{
+printf("P%d\t%d\t%d\n",P[i].id,P[i].tat,P[i].wt);
+}
+printf("The turn around time %f\n",tat);
+printf("The waiting time %f\n",wt);
+printf("The average turn around time %.2f\n",(tat/n));
+printf("The average waiting time %.2f\n",(wt/n));
+}
